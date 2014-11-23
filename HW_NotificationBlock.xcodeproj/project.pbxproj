@@ -24,6 +24,7 @@
 		A869220118BE133E00F81E26 /* KiwiUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A869220018BE133E00F81E26 /* KiwiUnitTest.m */; };
 		A89A3ED818BE141D00115826 /* MYNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = A86921C118BDF9B900F81E26 /* MYNotificationCenter.m */; };
 		A89A3EDB18BE150700115826 /* TestObj.m in Sources */ = {isa = PBXBuildFile; fileRef = A89A3EDA18BE150700115826 /* TestObj.m */; };
+		B213123C1A225ADE00FCC93B /* NotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B213123B1A225ADE00FCC93B /* NotificationCell.m */; };
 		C5BB8EC0FEE94FC9A819BEFE /* libPods-KiwiUnitTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D74F4ACF57644DE8961B22B /* libPods-KiwiUnitTest.a */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,8 @@
 		A869220218BE133E00F81E26 /* KiwiUnitTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KiwiUnitTest-Prefix.pch"; sourceTree = "<group>"; };
 		A89A3ED918BE150700115826 /* TestObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObj.h; sourceTree = "<group>"; };
 		A89A3EDA18BE150700115826 /* TestObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObj.m; sourceTree = "<group>"; };
+		B213123A1A225ADE00FCC93B /* NotificationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationCell.h; sourceTree = "<group>"; };
+		B213123B1A225ADE00FCC93B /* NotificationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationCell.m; sourceTree = "<group>"; };
 		EA2606460AF5D3AF1D72D0C6 /* Pods-KiwiUnitTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KiwiUnitTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-KiwiUnitTest/Pods-KiwiUnitTest.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +129,8 @@
 		A869219118BDF03300F81E26 /* HW_NotificationBlock */ = {
 			isa = PBXGroup;
 			children = (
+				B213123A1A225ADE00FCC93B /* NotificationCell.h */,
+				B213123B1A225ADE00FCC93B /* NotificationCell.m */,
 				A869219A18BDF03300F81E26 /* AppDelegate.h */,
 				A869219B18BDF03300F81E26 /* AppDelegate.m */,
 				A869219D18BDF03300F81E26 /* Main.storyboard */,
@@ -304,6 +309,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A86921A218BDF03300F81E26 /* ViewController.m in Sources */,
+				B213123C1A225ADE00FCC93B /* NotificationCell.m in Sources */,
 				A869219C18BDF03300F81E26 /* AppDelegate.m in Sources */,
 				A869219818BDF03300F81E26 /* main.m in Sources */,
 				A86921C218BDF9B900F81E26 /* MYNotificationCenter.m in Sources */,
