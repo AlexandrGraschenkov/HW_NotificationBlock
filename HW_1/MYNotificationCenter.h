@@ -14,7 +14,7 @@ typedef void(^CancelNotificationBlock)();
 
 + (instancetype)sharedInstance;
 
-@property (nonatomic, strong) NSMutableDictionary *myData;
+@property (strong) NSMutableDictionary *myData;
 
 // возвращает блок для отписки
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName;

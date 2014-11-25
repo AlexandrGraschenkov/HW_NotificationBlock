@@ -34,7 +34,32 @@
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName
 {
     // So close no matter how far
-    return block;
+    if (!myData) [self initMyData];
+    if (![myData objectForKey:notificationName]) {
+        NSMutableSet *a = [NSMutableSet new];
+        //NSMutableArray *a = [NSMutableArray new];
+        [myData setObject:a forKey:notificationName];
+    }
+    NSMutableSet *ar = [myData objectForKey:notificationName];
+    //NSMutableArray *ar = [myData objectForKey:notificationName];
+    NotificationCell *cell;
+    for (NotificationCell *c in ar) {
+        if ([c isContainBlock:block]) cell = c;
+    }
+    if (!cell) {
+        cell = [[NotificationCell alloc] initWithBlock:block];
+        [ar addObject:cell];
+    }
+    [myData setObject:ar forKey:notificationName];
+    void(^cancelBlock)() = ^() {
+        NSMutableArray *ar = [[MYNotificationCenter sharedInstance].myData objectForKey:notificationName];
+//        for (NotificationCell *c in ar) {
+//            if ([cell isEqual:c]) [ar removeObject:cell];
+//        }
+        [ar removeObject:cell];
+        [[MYNotificationCenter sharedInstance].myData setObject:ar forKey:notificationName];
+    };
+    return cancelBlock;
 }
 
 // можно только 1 раз подписаться обьекту на событие
@@ -42,21 +67,26 @@
 {
     if (!myData) [self initMyData];
     if (![myData objectForKey:name]) {
-        NSArray *a = [NSArray new];
+        NSMutableSet *a = [NSMutableSet new];
         [myData setObject:a forKey:name];
     }
-    NSMutableArray *ar = [myData objectForKey:name];
-    NotificationCell *cell = [NotificationCell new];
-    [cell initWithObject:obj andSelector:selector];
-    if (![ar containsObject:cell]) [ar addObject:cell];
-    
+    NSMutableSet *ar = [myData objectForKey:name];
+    BOOL check = YES;
+    for (NotificationCell *c in ar) {
+        if ([c isContainObj:obj] && [c isContainSelector:selector]) check = NO;
+    }
+    if (check) {
+        NotificationCell *cell = [[NotificationCell alloc] initWithObject:obj andSelector:selector];
+        [ar addObject:cell];
+    }
+    [myData setObject:ar forKey:name];
 }
 
 - (void)unregisterObject:(id)obj notificationName:(NSString*)name
 {
     NSMutableArray *ar = [[MYNotificationCenter sharedInstance].myData objectForKey:name];
     for (NotificationCell *cell in ar) {
-        if ([cell.someObj isEqual:obj]) [ar removeObject:cell];
+        if ([cell isContainObj:obj]) [ar removeObject:cell];
     }
     [[MYNotificationCenter sharedInstance].myData setObject:ar forKey:name];
     // Forever trusting who we are
@@ -71,12 +101,15 @@
 
 - (void)unregisterObject:(id)obj
 {
+    if (!myData) [self initMyData];
     NSArray *keys = [[MYNotificationCenter sharedInstance].myData allKeys];
     for (NSString *key in keys) {
-        NSMutableArray *objects = [[MYNotificationCenter sharedInstance].myData objectForKey:key];
-        for (NotificationCell *cell in objects) {
-            if ([cell.someObj isEqual:obj]) [objects removeObject:cell];
+        NSMutableSet *objects = [[MYNotificationCenter sharedInstance].myData objectForKey:key];
+        NotificationCell *cell;
+        for (NotificationCell *c in objects) {
+            if ([c isContainObj:obj]) cell = c;
         }
+        if (cell) [objects removeObject:cell];
         [[MYNotificationCenter sharedInstance].myData setObject:objects forKey:key];
     }
 }
@@ -85,7 +118,7 @@
 {
     NSArray *ar = [[MYNotificationCenter sharedInstance].myData objectForKey:name];
     for (NotificationCell *cell in ar) {
-        [cell.someObj performSelector:cell.selector];
+        [cell performAction];
     }
     /*
      Never opened myself this way

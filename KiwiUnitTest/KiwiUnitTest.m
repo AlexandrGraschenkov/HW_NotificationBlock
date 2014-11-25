@@ -30,7 +30,9 @@ describe(@"Single obj", ^{
 
     it(@"Register twise and post notification", ^{
         [[MYNotificationCenter sharedInstance] registerObject:obj selector:@selector(method1) notificationName:@"m1"];
+        NSLog(@"%@", [[MYNotificationCenter sharedInstance].myData objectForKey:@"m1"]);
         [[MYNotificationCenter sharedInstance] registerObject:obj selector:@selector(method1) notificationName:@"m1"];
+        NSLog(@"%@", [[MYNotificationCenter sharedInstance].myData objectForKey:@"m1"]);
         [[MYNotificationCenter sharedInstance] postNotificationWithName:@"m1"];
         [[theValue(obj.method1CallCount) should] equal:theValue(1)];
     });
@@ -68,13 +70,20 @@ describe(@"Single obj", ^{
     it(@"Register/unregister block", ^{
         __block NSInteger someVal = 0;
         MYNotificationCenter *center = [MYNotificationCenter sharedInstance];
+        //NSLog(@"%@", [[MYNotificationCenter sharedInstance].myData objectForKey:@"n1"]);
         CancelNotificationBlock cancel1 = [center registerBlock:^{ someVal++; } notificationName:@"n1"];
+        //NSLog(@"%@", [[MYNotificationCenter sharedInstance].myData objectForKey:@"n1"]);
         [center registerBlock:^{ someVal+=2; } notificationName:@"n1"];
+        //NSLog(@"%@", [[MYNotificationCenter sharedInstance].myData objectForKey:@"n1"]);
         [center postNotificationWithName:@"n1"];
         [[theValue(someVal) should] equal:theValue(3)];
         [[theValue(cancel1) should] beNonNil];
+        //NSLog(@"%ld", (long)someVal);
         cancel1();
+        //NSLog(@"%@", [[MYNotificationCenter sharedInstance].myData objectForKey:@"n1"]);
+        //NSLog(@"%ld", (long)someVal);
         [center postNotificationWithName:@"n1"];
+        //NSLog(@"%ld", (long)someVal);
         [[theValue(someVal) should] equal:theValue(5)];
     });
 });
