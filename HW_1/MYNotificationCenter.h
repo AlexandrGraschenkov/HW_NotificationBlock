@@ -11,7 +11,10 @@
 typedef void(^CancelNotificationBlock)();
 
 @interface MYNotificationCenter : NSObject
+
 + (instancetype)sharedInstance;
+
+@property (strong) NSMutableDictionary *myData;
 
 // возвращает блок для отписки
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName;
