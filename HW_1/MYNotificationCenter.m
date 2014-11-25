@@ -26,7 +26,10 @@
     return _sharedInstance;
 }
 
-
+- (void)initMyData
+{
+    myData = [NSMutableDictionary new];
+}
 
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName
 {
@@ -37,11 +40,16 @@
 // можно только 1 раз подписаться обьекту на событие
 - (void)registerObject:(id)obj selector:(SEL)selector notificationName:(NSString*)name
 {
-    NSMutableArray *ar = [[MYNotificationCenter sharedInstance].myData objectForKey:name];
+    if (!myData) [self initMyData];
+    if (![myData objectForKey:name]) {
+        NSArray *a = [NSArray new];
+        [myData setObject:a forKey:name];
+    }
+    NSMutableArray *ar = [myData objectForKey:name];
     NotificationCell *cell = [NotificationCell new];
     [cell initWithObject:obj andSelector:selector];
     if (![ar containsObject:cell]) [ar addObject:cell];
-    [[MYNotificationCenter sharedInstance].myData setObject:ar forKey:name];
+    
 }
 
 - (void)unregisterObject:(id)obj notificationName:(NSString*)name

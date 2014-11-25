@@ -11,7 +11,7 @@
 @interface NotificationCell : NSObject
 
 @property (nonatomic, weak) NSObject *someObj;
-@property (nonatomic) SEL selector;
+@property (nonatomic, assign) SEL selector;
 
 - (void)initWithObject:(NSObject *)obj andSelector:(SEL)sel;
 
