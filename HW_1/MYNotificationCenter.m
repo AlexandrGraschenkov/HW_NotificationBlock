@@ -36,23 +36,18 @@
 
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName
 {
+    void (^ tempBlock)() = [block copy];
+    
     CancelNotificationBlock cancelBlock = ^() {
         if ([self.eventDictionary objectForKey:notificationName]) {
-            for (id block_ in [self.eventDictionary objectForKey:notificationName]) {
-                if (![block_ isKindOfClass:[ObjecctAndSelector class]]) {
-                    if ([block_ isEqual:block]){
-                        [[self.eventDictionary objectForKey:notificationName] removeObject:block_];
-                    }
-                }
-            }
+                    [[self.eventDictionary objectForKey:notificationName] removeObject:tempBlock];
         }
     };
-    
     if (![self.eventDictionary objectForKey:notificationName]) {
         NSMutableArray *notificationArray = [NSMutableArray new];
         [self.eventDictionary setObject:notificationArray forKey:notificationName];
     }
-    [[self.eventDictionary objectForKey:notificationName] addObject:block];
+    [[self.eventDictionary objectForKey:notificationName] addObject:tempBlock];
     
     return [cancelBlock copy];
 }
@@ -69,7 +64,6 @@
             }
         }
     }
-    
     //Если не нашли, то создаем экземпляр класса ObjectAndSelector, записываем туда obj, selector и добавляем в массив подписчиков события name
     if (!isExist) {
         if (![self.eventDictionary objectForKey:name]) {
@@ -105,14 +99,18 @@
 
 - (void)unregisterObject:(id)obj
 {
-    //Получаем все ключи словаря и заходя в каждый массив словаря ищем и удаляем (ObjectAndElector *), object которого является obj
     NSArray *keyArray = [self.eventDictionary allKeys];
     for (NSString *key in keyArray) {
-        for (ObjecctAndSelector *objAndSel in [self.eventDictionary objectForKey:key]) {
-            if ([objAndSel.object isEqual:obj]) {
-                [[self.eventDictionary objectForKey:key] removeObject:objAndSel];
+        NSMutableArray *objectsToDelete = [NSMutableArray array];
+        for (id object in [self.eventDictionary objectForKey:key]) {
+            if ([object isKindOfClass:[ObjecctAndSelector class]]){
+                ObjecctAndSelector *objAndSel = object;
+                if ([objAndSel.object isEqual:obj]){
+                    [objectsToDelete addObject:objAndSel];
+                }
             }
         }
+        [[self.eventDictionary objectForKey:key] removeObjectsInArray:objectsToDelete];
     }
 }
 
@@ -123,7 +121,7 @@
     for (id obj in [self.eventDictionary objectForKey:name]) {
         if ([obj isKindOfClass:[ObjecctAndSelector class]]) {
             ObjecctAndSelector *objAndSel = obj;
-            if ([objAndSel.object respondsToSelector:objAndSel.selector]) {
+            if ((objAndSel.object!=nil)&&[objAndSel.object respondsToSelector:objAndSel.selector]) {
                 [objAndSel.object performSelector:objAndSel.selector];
             }
         } else if (obj && ![obj isKindOfClass:[ObjecctAndSelector class]]) {
