@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ObjecctAndSelector.h"
 
 typedef void(^CancelNotificationBlock)();
 

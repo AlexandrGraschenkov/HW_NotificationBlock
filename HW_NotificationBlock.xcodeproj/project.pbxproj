@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5F4F4371A1F54A500FA003E /* ObjecctAndSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F4F4361A1F54A500FA003E /* ObjecctAndSelector.m */; };
 		A869218C18BDF03300F81E26 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A869218B18BDF03300F81E26 /* Foundation.framework */; };
 		A869218E18BDF03300F81E26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A869218D18BDF03300F81E26 /* CoreGraphics.framework */; };
 		A869219018BDF03300F81E26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A869218F18BDF03300F81E26 /* UIKit.framework */; };
@@ -30,6 +31,8 @@
 /* Begin PBXFileReference section */
 		6D74F4ACF57644DE8961B22B /* libPods-KiwiUnitTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KiwiUnitTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		801D637538779003BD087AF7 /* Pods-KiwiUnitTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KiwiUnitTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KiwiUnitTest/Pods-KiwiUnitTest.debug.xcconfig"; sourceTree = "<group>"; };
+		A5F4F4351A1F54A500FA003E /* ObjecctAndSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjecctAndSelector.h; sourceTree = "<group>"; };
+		A5F4F4361A1F54A500FA003E /* ObjecctAndSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjecctAndSelector.m; sourceTree = "<group>"; };
 		A869218818BDF03300F81E26 /* HW_1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HW_1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A869218B18BDF03300F81E26 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A869218D18BDF03300F81E26 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -134,6 +137,8 @@
 				A86921C018BDF9B900F81E26 /* MYNotificationCenter.h */,
 				A86921C118BDF9B900F81E26 /* MYNotificationCenter.m */,
 				A86921A318BDF03300F81E26 /* Images.xcassets */,
+				A5F4F4351A1F54A500FA003E /* ObjecctAndSelector.h */,
+				A5F4F4361A1F54A500FA003E /* ObjecctAndSelector.m */,
 				A869219218BDF03300F81E26 /* Supporting Files */,
 			);
 			name = HW_NotificationBlock;
@@ -305,6 +310,7 @@
 			files = (
 				A86921A218BDF03300F81E26 /* ViewController.m in Sources */,
 				A869219C18BDF03300F81E26 /* AppDelegate.m in Sources */,
+				A5F4F4371A1F54A500FA003E /* ObjecctAndSelector.m in Sources */,
 				A869219818BDF03300F81E26 /* main.m in Sources */,
 				A86921C218BDF9B900F81E26 /* MYNotificationCenter.m in Sources */,
 			);

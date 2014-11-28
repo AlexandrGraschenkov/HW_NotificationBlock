@@ -65,7 +65,7 @@ describe(@"Single obj", ^{
         [[theValue(someVal) should] equal:theValue(2)];
     });
     
-    it(@"Register/unregister block", ^{
+    it(@"Register/unregister block", ^{                     //!!!
         __block NSInteger someVal = 0;
         MYNotificationCenter *center = [MYNotificationCenter sharedInstance];
         CancelNotificationBlock cancel1 = [center registerBlock:^{ someVal++; } notificationName:@"n1"];
