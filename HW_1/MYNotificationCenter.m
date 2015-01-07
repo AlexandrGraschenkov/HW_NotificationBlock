@@ -7,51 +7,124 @@
 //
 
 #import "MYNotificationCenter.h"
-
+#import "Observer.h"
 @interface MYNotificationCenter()
 @end
 
 @implementation MYNotificationCenter
+@synthesize observers,tempSet,tempSet2,tempArr;
 + (instancetype)sharedInstance
 {
-    return nil;
+    static id _sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[self alloc] init];
+    });
+    return _sharedInstance;
+
+}
+
+-(void)initDictionary{
+    observers = [[NSMutableDictionary alloc]init];
 }
 
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName
 {
-    // So close no matter how far
+    if (!observers) {
+        [self initDictionary];
+    }
+    if (![observers objectForKey:notificationName]) {
+        tempSet = [NSMutableSet new];
+        [observers setObject:tempSet forKey:notificationName];
+    }
+    
+    tempSet2 = [observers objectForKey:notificationName];
+    Observer *obs;
+    
+    for (Observer *ob in tempSet2) {
+        if ([ob isContainBlock:block]) {
+            obs=ob;
+        }
+    }
+    if (!obs) {
+        obs = [[Observer alloc]initWithBlock:block];
+        [tempSet2 addObject:obs];
+    }
+    [observers setObject:tempSet2 forKey:notificationName];
+    void(^denyBlock)() = ^(){
+        tempArr = [[MYNotificationCenter sharedInstance].observers objectForKey:notificationName];
+        [tempArr removeObject:obs];
+        [[MYNotificationCenter sharedInstance].observers setObject:tempArr forKey:notificationName];
+    };
+    return denyBlock;
+    
 }
 
 // можно только 1 раз подписаться обьекту на событие
 - (void)registerObject:(id)obj selector:(SEL)selector notificationName:(NSString*)name
 {
-    // Couldn't be much more from the heart
+    if (!observers) {
+        [self initDictionary];
+    }
+    if (![observers objectForKey:name]) {
+        tempSet = [NSMutableSet new];
+        [observers setObject:tempSet forKey:name];
+    }
+    tempSet2 = [observers objectForKey:name];
+    for (Observer *ob in tempSet2) {
+        if (![ob isContainObj:obj] && ![ob isContainSelector:selector]) {
+            Observer *obs = [[Observer alloc]initWithObject:obj andSelector:selector];
+            [tempSet2 addObject:obs];
+        }
+    }
+    [observers setObject:tempSet2 forKey:name];
+
 }
 
 - (void)unregisterObject:(id)obj notificationName:(NSString*)name
 {
-    // Forever trusting who we are
+    tempArr = [[MYNotificationCenter sharedInstance].observers objectForKey:name];
+    for (Observer *ob in tempArr) {
+        if ([ob isContainObj:obj]) {
+            [tempArr removeObject:ob];
+        }
+    }
+    [[MYNotificationCenter sharedInstance].observers setObject:tempArr forKey:name];
 }
 
 
 - (void)unregisterAllObject:(id)obj notificationName:(NSString*)name
 {
-    // And nothing else matters
+    [[MYNotificationCenter sharedInstance].observers setObject:[NSArray new] forKey:name];
 }
 
 - (void)unregisterObject:(id)obj
 {
-    // ...
+    if (!observers) {
+        [self initDictionary];
+    }
+    NSArray *keys = [[MYNotificationCenter sharedInstance].observers allKeys];
+    for (NSString *key in keys) {
+        tempSet = [[MYNotificationCenter sharedInstance].observers objectForKey:key];
+        Observer *ob;
+        for (Observer *o in tempSet) {
+            if ([o isContainObj:obj]) {
+                ob=o;
+            }
+        }
+        if (ob) {
+            [tempSet removeObject:ob];
+        }
+        [[MYNotificationCenter sharedInstance].observers setObject:tempSet forKey:key];
+    }
 }
 
 - (void)postNotificationWithName:(NSString*)name
 {
-    /*
-     Never opened myself this way
-     Life is ours, we live it our way
-     All these words I don't just say
-     And nothing else matters
-     */
+    tempArr = [[MYNotificationCenter sharedInstance].observers objectForKey:name];
+    for (Observer *ob in tempArr) {
+        [ob performAction];
+    }
 }
 
 /*The*/ @end
