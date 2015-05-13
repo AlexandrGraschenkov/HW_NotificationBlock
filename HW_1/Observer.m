@@ -8,19 +8,25 @@
 
 #import "Observer.h"
 
-@implementation Observer{
-    BOOL isContain;
-    SEL mySelector;
-    __weak NSObject *myObject;
-}
+@interface Observer()
+
+@property (assign, nonatomic) void(^myBlock)();
+@property BOOL isContain;
+@property SEL mySelector;
+@property __weak NSObject *myObject;
+
+@end
+
+
+@implementation Observer
 
 - (id)initWithObject:(NSObject *)obj andSelector:(SEL)sel{
     self=[super init];
     if (self) {
-        mySelector = sel;
-        myObject = obj;
+        _mySelector = sel;
+        _myObject = obj;
     }
-    isContain = YES;
+    _isContain = YES;
     return self;
 }
 - (id)initWithBlock:(void(^)())block{
@@ -28,24 +34,24 @@
     if (self) {
         _myBlock = block;
     }
-    isContain = NO;
+    _isContain = NO;
     return self;
 }
 
 - (void)performAction {
-    if (isContain) {
-        [myObject performSelector:mySelector];
+    if (_isContain) {
+        [_myObject performSelector:_mySelector];
     } else {
         _myBlock();
     }
 }
 - (BOOL)isContainObj:(NSObject *)obj{
-    return [obj isEqual:myObject];
+    return [obj isEqual:_myObject];
 }
 - (BOOL)isContainBlock:(void(^)())block{
     return (_myBlock == block);
 }
 - (BOOL)isContainSelector:(SEL)sel{
-    return (mySelector==sel);
+    return (_mySelector==sel);
 }
 @end

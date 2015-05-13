@@ -10,8 +10,6 @@
 
 @interface Observer : NSObject
 
-@property (assign, nonatomic) void(^myBlock)();
-
 - (id)initWithObject:(NSObject *)obj andSelector:(SEL)sel;
 - (id)initWithBlock:(void(^)())block;
 

@@ -9,10 +9,13 @@
 #import "MYNotificationCenter.h"
 #import "Observer.h"
 @interface MYNotificationCenter()
+
+@property (strong) NSMutableDictionary *observers;
+
 @end
 
 @implementation MYNotificationCenter
-@synthesize observers,tempSet,tempSet2,tempArr;
+
 + (instancetype)sharedInstance
 {
     static id _sharedInstance = nil;
@@ -25,71 +28,65 @@
 }
 
 -(void)initDictionary{
-    observers = [[NSMutableDictionary alloc]init];
+    _observers = [NSMutableDictionary new];
 }
 
 - (CancelNotificationBlock)registerBlock:(void(^)())block notificationName:(NSString *)notificationName
 {
-    if (!observers) {
-        [self initDictionary];
-    }
-    if (![observers objectForKey:notificationName]) {
-        tempSet = [NSMutableSet new];
-        [observers setObject:tempSet forKey:notificationName];
-    }
-    
-    tempSet2 = [observers objectForKey:notificationName];
     Observer *obs;
+    NSMutableSet *obsSetForName = [NSMutableSet setWithSet:[self createSet:notificationName]];
     
-    for (Observer *ob in tempSet2) {
-        if ([ob isContainBlock:block]) {
-            obs=ob;
-        }
+    for (Observer *ob in obsSetForName) {
+        if ([ob isContainBlock:block]) obs=ob;
     }
     if (!obs) {
         obs = [[Observer alloc]initWithBlock:block];
-        [tempSet2 addObject:obs];
+        [obsSetForName addObject:obs];
     }
-    [observers setObject:tempSet2 forKey:notificationName];
+    [_observers setObject:obsSetForName forKey:notificationName];
     void(^denyBlock)() = ^(){
-        tempArr = [[MYNotificationCenter sharedInstance].observers objectForKey:notificationName];
-        [tempArr removeObject:obs];
-        [[MYNotificationCenter sharedInstance].observers setObject:tempArr forKey:notificationName];
+        NSMutableArray *obsArrForName = [[MYNotificationCenter sharedInstance].observers objectForKey:notificationName];
+        [obsArrForName removeObject:obs];
+        [[MYNotificationCenter sharedInstance].observers setObject:obsArrForName forKey:notificationName];
     };
     return denyBlock;
     
 }
 
-// можно только 1 раз подписаться обьекту на событие
+-(NSSet*)createSet:(NSString*)name{
+    if (!_observers) [self initDictionary];
+    
+    if (![_observers objectForKey:name]) {
+        NSMutableSet *emptySet = [NSMutableSet new];
+        [_observers setObject:emptySet forKey:name];
+    }
+    return [_observers objectForKey:name];
+}
+
 - (void)registerObject:(id)obj selector:(SEL)selector notificationName:(NSString*)name
 {
-    if (!observers) {
-        [self initDictionary];
+    NSMutableSet *obsSetForName = [NSMutableSet setWithSet:[self createSet:name]];
+    BOOL isAlreadyExist = NO;
+    for (Observer *ob in obsSetForName) {
+        if ([ob isContainObj:obj] && [ob isContainSelector:selector]) isAlreadyExist = YES;
     }
-    if (![observers objectForKey:name]) {
-        tempSet = [NSMutableSet new];
-        [observers setObject:tempSet forKey:name];
+    if (isAlreadyExist==NO) {
+        Observer *obs = [[Observer alloc]initWithObject:obj andSelector:selector];
+        [obsSetForName addObject:obs];
     }
-    tempSet2 = [observers objectForKey:name];
-    for (Observer *ob in tempSet2) {
-        if (![ob isContainObj:obj] && ![ob isContainSelector:selector]) {
-            Observer *obs = [[Observer alloc]initWithObject:obj andSelector:selector];
-            [tempSet2 addObject:obs];
-        }
-    }
-    [observers setObject:tempSet2 forKey:name];
+    [_observers setObject:obsSetForName forKey:name];
 
 }
 
 - (void)unregisterObject:(id)obj notificationName:(NSString*)name
 {
-    tempArr = [[MYNotificationCenter sharedInstance].observers objectForKey:name];
-    for (Observer *ob in tempArr) {
+    NSMutableArray *obsArrForName = [[MYNotificationCenter sharedInstance].observers objectForKey:name];
+    for (Observer *ob in obsArrForName) {
         if ([ob isContainObj:obj]) {
-            [tempArr removeObject:ob];
+            [obsArrForName removeObject:ob];
         }
     }
-    [[MYNotificationCenter sharedInstance].observers setObject:tempArr forKey:name];
+    [[MYNotificationCenter sharedInstance].observers setObject:obsArrForName forKey:name];
 }
 
 
@@ -100,29 +97,24 @@
 
 - (void)unregisterObject:(id)obj
 {
-    if (!observers) {
-        [self initDictionary];
-    }
+    if (!_observers)[self initDictionary];
+    
     NSArray *keys = [[MYNotificationCenter sharedInstance].observers allKeys];
     for (NSString *key in keys) {
-        tempSet = [[MYNotificationCenter sharedInstance].observers objectForKey:key];
+        NSMutableSet *observersSet = [[MYNotificationCenter sharedInstance].observers objectForKey:key];
         Observer *ob;
-        for (Observer *o in tempSet) {
-            if ([o isContainObj:obj]) {
-                ob=o;
-            }
+        for (Observer *o in observersSet) {
+            if ([o isContainObj:obj]) ob=o;
         }
-        if (ob) {
-            [tempSet removeObject:ob];
-        }
-        [[MYNotificationCenter sharedInstance].observers setObject:tempSet forKey:key];
+        if (ob) [observersSet removeObject:ob];
+        [[MYNotificationCenter sharedInstance].observers setObject:observersSet forKey:key];
     }
 }
 
 - (void)postNotificationWithName:(NSString*)name
 {
-    tempArr = [[MYNotificationCenter sharedInstance].observers objectForKey:name];
-    for (Observer *ob in tempArr) {
+    NSArray *obsArr = [[MYNotificationCenter sharedInstance].observers objectForKey:name];
+    for (Observer *ob in obsArr) {
         [ob performAction];
     }
 }

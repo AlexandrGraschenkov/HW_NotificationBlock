@@ -12,11 +12,6 @@ typedef void(^CancelNotificationBlock)();
 
 @interface MYNotificationCenter : NSObject
 
-@property (strong) NSMutableDictionary *observers;
-@property (strong) NSMutableSet *tempSet;
-@property (strong) NSMutableSet *tempSet2;
-@property (strong) NSMutableArray *tempArr;
-
 + (instancetype)sharedInstance;
 
 // возвращает блок для отписки
