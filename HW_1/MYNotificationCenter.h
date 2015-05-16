@@ -11,6 +11,7 @@
 typedef void(^CancelNotificationBlock)();
 
 @interface MYNotificationCenter : NSObject
+
 + (instancetype)sharedInstance;
 
 // возвращает блок для отписки
